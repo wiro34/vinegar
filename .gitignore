@@ -1,0 +1,10 @@
+/RUNNING_PID
+/.idea/
+/.idea_modules/
+/logs/
+/project/*-shim.sbt
+/project/project/
+/project/target/
+/target/
+/node_modules/
+/projectFilesBackup/
