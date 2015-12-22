@@ -5,30 +5,35 @@ Vinegar
 
 ## Requirement
 
-* Node.js >= 4.2.1
+* Java SE 6 以降
 
 ## Installation
 
-`npm install -g https://stash.sddiv.net:8443/scm/tool/vinegar.git`
+`release` ディレクトリの `vinegar-*.jar` をダウンロードしてください。
 
-※ SSL認証がオレオレのためNPMのSSL認証を無効化する必要があります。<br>
-　 代替手段としては git clone した後で、`npm install -g ~/vinegar` のようにディレクトリを指定してインストールしてください。
+## Usage
 
-## 使い方
+`java -jar vinegar-*.jar example/example.feature`
 
-`vinegar example/example.feature`
+`java -jar vinegar-*.jar -o /path/to/project --force example/example.feature`
 
-`vinegar -o /tmp example/example.feature`
+```
+java -jar vinegar-*.jar --help
+Usage: vinegar [options] file
+
+  -o <outdir> | --out <outdir>
+        output directory of generated excel file
+  -f | --force
+        create output directory (recursively) if directory is not exist
+  file
+        feature file
+  --help
+        prints this usage text
+```
 
 ## Contribution
 
-### run SBT console
-
-```
-git clone ssh://git@stash.sddiv.net:7999/tool/vinegar.git
-npm install
-sbt
-```
+Use sbt console
 
 ### Generate idea project
 
@@ -39,11 +44,10 @@ sbt gen-idea
 ### Build
 
 ```
-npm run build
+sbt buildRelease
 ```
 
-## TODO List
+## TODO
 
-* @pending タグが付いたシナリオは読み飛ばす
-* テーブル形式の引数に対応する
-
+- [ ] @pending タグが付いたシナリオは読み飛ばす
+- [ ] テーブル形式の引数に対応する

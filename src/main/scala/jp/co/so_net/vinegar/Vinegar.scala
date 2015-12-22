@@ -1,69 +1,62 @@
 package jp.co.so_net.vinegar
 
-import jp.co.so_net.vinegar.facade.Require
-import jp.co.so_net.vinegar.facade.lodash.Lodash
-import jp.co.so_net.vinegar.facade.minimist.Minimist
-import jp.co.so_net.vinegar.facade.path.Path
-import jp.co.so_net.vinegar.generator.ExcelGenerator
+import java.io.{FileNotFoundException, File}
+import java.nio.file.{Files, Path, Paths}
 
-import scala.scalajs.js
-import scala.scalajs.js.annotation.JSName
-import js.Dynamic.{global => g}
+import generator.ExcelGenerator
 
-@js.native
-class VinegarOptions extends js.Object {
-  @JSName("_")
-  val _args: js.Array[String] = js.native
+object VinegarMain extends App {
+  val name = "vinegar"
 
-  val o: js.UndefOr[String] = js.native
+  VinegarOptionParser.parse(args, VinegarOption()) match {
+    case Some(config) =>
+      try {
+        generateExcel(config)
+      } catch {
+        case e: Throwable => errorAndExit(e.toString)
+      }
+    case None => // arguments are bad, error message will have been displayed
+  }
 
-  val out: js.UndefOr[String] = js.native
-}
-
-object VinegarMain extends js.JSApp {
-  val lodash = Require[Lodash]("lodash")
-  val minimist = Require[Minimist]("minimist")
-  val fs = g.require("fs")
-  val path = Require[Path]("path")
-
-  def main(): Unit = {
-    val options = minimist(g.process.argv.slice(2)).asInstanceOf[VinegarOptions]
-    if (options._args.length > 0) {
-      val infile = options._args(0)
-      val outDir = options.o.orElse(options.out).getOrElse(path.join(infile, "../"))
-      fs.access(infile, fs.R_OK, (err: Any) => {
-        if (!lodash.isObject(err)) generateExcel(infile, outDir)
-        else exitWithError(s"File '${infile}' is not found")
-      })
-    } else {
-      usage
+  def generateExcel(config: VinegarOption) = {
+    val path = Paths.get(config.file.getAbsolutePath)
+    try {
+      val gherkin = loadFile(path.toFile)
+      VinegarDto.parse(gherkin) match {
+        case Right(suite) =>
+          if (config.force)
+            makeDirRecursive(path.getParent)
+          new ExcelGenerator(suite).writeFile(generateOutputFilename(path))
+        case Left(e) =>
+          errorAndExit(e.getMessage)
+      }
+    } catch {
+      case e: FileNotFoundException => errorAndExit(path + ": No such file or directory")
     }
   }
 
-  def generateExcel(infile: String, outDir: String): Unit = {
-    val outfile = path.join(outDir, path.basename(infile).replaceAll(path.extname(infile), ".xlsx"))
-    fs.readFile(infile, "utf8", (err: Any, text: String) => {
-      try {
-        if (!lodash.isObject(err)) ExcelGenerator.parse(text).generate(outfile)
-        else exitWithError("ERROR: " + err)
-      } catch {
-        case e: Exception =>
-          println(e)
-          exitWithError(e.getMessage)
-      }
-    })
+  def loadFile(file: File) = io.Source.fromFile(file).mkString
+
+  def generateOutputFilename(path: Path): String = {
+    val filename = path.getFileName.toString
+    val basename = filename.lastIndexOf('.') match {
+      case i if i >= 0 => filename.substring(0, i)
+      case _ => filename
+    }
+    path.getParent.resolve(basename + ".xlsx").toString
   }
 
-  def exitWithError(message: String): Unit = {
+  private def makeDirRecursive(path: Path): Unit = path match {
+    case p if Files.notExists(p.getParent) =>
+      makeDirRecursive(p.getParent)
+    case p if Files.notExists(p) =>
+      Files.createDirectory(p)
+    case _ =>
+    // nothing to do
+  }
+
+  def errorAndExit(message: String, status: Int = -1) = {
     System.err.println(message)
-    // System.exit(1)
-    g.process.exit(1)
-  }
-
-  def usage: Unit = {
-    println("Usage: vinegar [options] file")
-    println()
-    println("  options:")
-    println("    -o,--out     output file")
+    System.exit(status)
   }
 }
