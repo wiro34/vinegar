@@ -13,12 +13,19 @@ Vinegar
 
 ## Usage
 
-`java -jar vinegar-*.jar example/example.feature`
+```
+java -jar vinegar-*.jar example/example.feature
+```
 
-`java -jar vinegar-*.jar -o /path/to/project --force example/example.feature`
+```
+java -jar vinegar-*.jar -o /path/to/project --force example/example.feature
+```
 
 ```
 java -jar vinegar-*.jar --help
+```
+
+```
 Usage: vinegar [options] file
 
   -o <outdir> | --out <outdir>
@@ -51,3 +58,4 @@ sbt buildRelease
 
 - [ ] @pending タグが付いたシナリオは読み飛ばす
 - [ ] テーブル形式の引数に対応する
+- [ ] 日本語のフィーチャファイルに対応する
