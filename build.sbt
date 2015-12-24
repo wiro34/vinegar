@@ -1,41 +1,28 @@
-import org.scalajs.sbtplugin.ScalaJSPlugin
-
-enablePlugins(ScalaJSPlugin)
-
 name := """vinegar"""
 
 version := "0.1"
 
 scalaVersion := "2.11.7"
 
-scalaJSStage in Global := FastOptStage
+libraryDependencies += "io.cucumber" % "gherkin3" % "3.1.2"
 
-persistLauncher in Compile := true
+libraryDependencies += "com.norbitltd" % "spoiwo" % "1.0.6"
 
-persistLauncher in Test := false
+libraryDependencies += "com.github.scopt" %% "scopt" % "3.3.0"
 
-postLinkJSEnv := NodeJSEnv(executable = "node").value
+libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.4" % "test"
 
-val buildBinFullOpt = Def.taskKey[File]("Generate the file ..")
+resolvers += Resolver.sonatypeRepo("public")
 
-artifactPath in Compile in buildBinFullOpt := baseDirectory.value / "bin" / "vinegar"
+val buildRelease = Def.taskKey[File]("Build release jar ...")
 
-// @see https://gist.github.com/chandu0101/a92a9d7fd60ac741ca41
-buildBinFullOpt in Compile := {
-  val outFile = (artifactPath in Compile in buildBinFullOpt).value
+artifactPath in Compile in buildRelease := baseDirectory.value / "release" / ("vinegar-" + version.value + ".jar")
 
-  // open
-  val loaderFile = (resourceDirectory in Compile).value / "loader.js"
-  IO.copyFile(loaderFile, outFile)
+buildRelease in Compile := {
+  val outFile = (artifactPath in Compile in buildRelease).value
+  val assemblyFile = (assembly in Compile).value
 
-  // add fullopt output
-  val fullOutputCode = IO.read((fullOptJS in Compile).value.data)
-  IO.append(outFile, fullOutputCode)
-
-  // add launcher code too
-  val launcher = (scalaJSLauncher in Compile).value.data.content
-  IO.append(outFile, launcher)
+  IO.copyFile(assemblyFile, outFile)
 
   outFile
 }
-

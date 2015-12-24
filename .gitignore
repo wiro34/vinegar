@@ -5,6 +5,5 @@
 /project/*-shim.sbt
 /project/project/
 /project/target/
+/projectFilesBackup*/
 /target/
-/node_modules/
-/projectFilesBackup/
