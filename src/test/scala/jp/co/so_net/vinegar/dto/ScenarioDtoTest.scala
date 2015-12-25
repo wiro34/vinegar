@@ -19,7 +19,15 @@ class ScenarioDtoTest extends FlatSpec with Matchers with FeatureLoader {
   }
 }
 
-class StepDtoTest extends FlatSpec with Matchers with FeatureLoader {
+class StepDtoForEnTest extends SharedExamplesForStepDto {
+  override val featureFile = "/example.feature"
+}
+
+class StepDtoForJaTest extends SharedExamplesForStepDto {
+  override val featureFile = "/example.ja.feature"
+}
+
+abstract class SharedExamplesForStepDto extends FlatSpec with Matchers with FeatureLoader {
   def parseCases(scenarioIndex: Int) =
     new StepDto(feature, feature.getScenarioDefinitions.get(scenarioIndex), scenarioIndex + 1).parseSteps
 
