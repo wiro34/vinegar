@@ -4,6 +4,8 @@ import com.norbitltd.spoiwo.model.enums.{CellHorizontalAlignment, CellFill, Cell
 import com.norbitltd.spoiwo.model._
 
 object DefinedStyles {
+  val metaRange = Range(2, 9)
+
   val lineHeight = 20
 
   val font = Font(fontName = "メイリオ", height = 10)
@@ -49,6 +51,8 @@ object DefinedStyles {
   val caseCellStyle = valueCellStyle.withVerticalAlignment(CellVerticalAlignment.Top)
 
   val caseIdCellStyle = headerCellStyle
+
+  val noteCellStyle = caseCellStyle.withoutWrapText
 
   implicit def toWidth(points: Int): Width = new Width(points, WidthUnit.Character)
 

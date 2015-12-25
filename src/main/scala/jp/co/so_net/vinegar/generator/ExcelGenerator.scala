@@ -41,12 +41,12 @@ class StoryGenerator(suite: Suite) extends SheetGenerator {
   def generate(sheet: Sheet): Sheet = {
     val row = Row(
       Cell(value = "対応ストーリー", index = 0, style = headerCellStyle),
-      Cell(value = suite.name, index = 1, style = valueCellStyle),
-      Cell(value = "", index = 2, style = valueCellStyle),
-      Cell(value = "", index = 3, style = valueCellStyle)
+      Cell(value = suite.name, index = 1, style = valueCellStyle)
+    ).addCells(
+      metaRange.map(i => Cell(value = "", index = i, style = valueCellStyle))
     )
     val rowIndex = sheet.rows.length
-    sheet.addRow(row).addMergedRegion(CellRange(rowIndex -> rowIndex, 1 -> 3))
+    sheet.addRow(row).addMergedRegion(CellRange(rowIndex -> rowIndex, 1 -> metaRange.last))
   }
 }
 
@@ -58,12 +58,12 @@ class DescriptionGenerator(suite: Suite) extends SheetGenerator {
     val description = suite.description.getOrElse("")
     val row = Row(
       Cell(value = "目的／観点", index = 0, style = headerCellStyle),
-      Cell(value = description, index = 1, style = valueCellStyle),
-      Cell(value = "", index = 2, style = valueCellStyle),
-      Cell(value = "", index = 3, style = valueCellStyle)
+      Cell(value = description, index = 1, style = valueCellStyle)
+    ).addCells(
+      metaRange.map(i => Cell(value = "", index = i, style = valueCellStyle))
     ).withHeight(description.split("\n").length * lineHeight)
     val rowIndex = sheet.rows.length
-    sheet.addRow(row).addMergedRegion(CellRange(rowIndex -> rowIndex, 1 -> 3))
+    sheet.addRow(row).addMergedRegion(CellRange(rowIndex -> rowIndex, 1 -> metaRange.last))
   }
 }
 
@@ -75,12 +75,12 @@ class BackgroundGenerator(suite: Suite) extends SheetGenerator {
     val background = suite.background.getOrElse("")
     val row = Row(
       Cell(value = "事前準備", index = 0, style = headerCellStyle),
-      Cell(value = background, index = 1, style = valueCellStyle),
-      Cell(value = "", index = 2, style = valueCellStyle),
-      Cell(value = "", index = 3, style = valueCellStyle)
+      Cell(value = background, index = 1, style = valueCellStyle)
+    ).addCells(
+      metaRange.map(i => Cell(value = "", index = i, style = valueCellStyle))
     ).withHeight(background.split("\n").length * lineHeight)
     val rowIndex = sheet.rows.length
-    sheet.addRow(row).addMergedRegion(CellRange(rowIndex -> rowIndex, 1 -> 3))
+    sheet.addRow(row).addMergedRegion(CellRange(rowIndex -> rowIndex, 1 -> metaRange.last))
   }
 }
 
@@ -92,14 +92,14 @@ class ColumnsGenerator(suite: Suite) extends SheetGenerator {
     val columns = List(
       Column(index = 0, width = 13, style = centerStyle),
       Column(index = 1, width = 40, style = wrappedStyle),
-      Column(index = 2, width = 40, style = wrappedStyle),
+      Column(index = 2, width = 50, style = wrappedStyle),
       Column(index = 3, width = 50, style = wrappedStyle),
       Column(index = 4, width = 10, style = centerStyle),
       Column(index = 5, width = 10, style = centerStyle),
       Column(index = 6, width = 10, style = centerStyle),
       Column(index = 7, width = 10, style = centerStyle),
       Column(index = 8, width = 10, style = centerStyle),
-      Column(index = 9, width = 40, style = wrappedStyle)
+      Column(index = 9, width = 80, style = wrappedStyle)
     )
     sheet.addColumns(columns)
   }
@@ -173,7 +173,7 @@ class CaseGenerator(c: Case) extends SheetGenerator {
       Cell(value = "", index = 6, style = caseCellStyle),
       Cell(value = "", index = 7, style = caseCellStyle),
       Cell(value = "", index = 8, style = caseCellStyle),
-      Cell(value = c.note.getOrElse(""), index = 9, style = caseCellStyle)
+      Cell(value = c.note.getOrElse(""), index = 9, style = noteCellStyle)
     )
     sheet.addRow(row)
   }
