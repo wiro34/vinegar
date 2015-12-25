@@ -2,7 +2,7 @@ package jp.co.so_net.vinegar.generator
 
 import com.norbitltd.spoiwo.model._
 import com.norbitltd.spoiwo.natures.xlsx.Model2XlsxConversions._
-import jp.co.so_net.vinegar.model.{Case, Scenario, Suite}
+import jp.co.so_net.vinegar.model.{Given, Case, Scenario, Suite}
 
 trait SheetGenerator {
   def generate(sheet: Sheet): Sheet
@@ -163,20 +163,37 @@ class CaseGenerator(c: Case) extends SheetGenerator {
   import DefinedStyles._
 
   def generate(sheet: Sheet): Sheet = {
-    val row = Row(
-      Cell(value = c.id, index = 0, style = caseIdCellStyle),
-      Cell(value = c.given.getOrElse(""), index = 1, style = caseCellStyle),
-      Cell(value = c.when.getOrElse(""), index = 2, style = caseCellStyle),
-      Cell(value = c.then.getOrElse(""), index = 3, style = caseCellStyle),
-      Cell(value = "", index = 4, style = caseCellStyle),
-      Cell(value = "", index = 5, style = caseCellStyle),
-      Cell(value = "", index = 6, style = caseCellStyle),
-      Cell(value = "", index = 7, style = caseCellStyle),
-      Cell(value = "", index = 8, style = caseCellStyle),
-      Cell(value = c.note.getOrElse(""), index = 9, style = noteCellStyle)
-    )
-    sheet.addRow(row)
+//    val row = Row(
+//      Cell(value = c.id, index = 0, style = caseIdCellStyle),
+//      Cell(value = c.given.getOrElse(""), index = 1, style = caseCellStyle),
+//      Cell(value = c.when.getOrElse(""), index = 2, style = caseCellStyle),
+//      Cell(value = c.then.getOrElse(""), index = 3, style = caseCellStyle),
+//      Cell(value = "", index = 4, style = caseCellStyle),
+//      Cell(value = "", index = 5, style = caseCellStyle),
+//      Cell(value = "", index = 6, style = caseCellStyle),
+//      Cell(value = "", index = 7, style = caseCellStyle),
+//      Cell(value = "", index = 8, style = caseCellStyle),
+//      Cell(value = c.thenNote.getOrElse(""), index = 9, style = noteCellStyle)
+//    )
+//    sheet.addRow(row)
+    sheet
   }
+//
+//  def generate(sheet: Sheet): Sheet = {
+//    val row = Row(
+//      Cell(value = c.id, index = 0, style = caseIdCellStyle),
+//      Cell(value = c.given.getOrElse(""), index = 1, style = caseCellStyle),
+//      Cell(value = c.when.getOrElse(""), index = 2, style = caseCellStyle),
+//      Cell(value = c.then.getOrElse(""), index = 3, style = caseCellStyle),
+//      Cell(value = "", index = 4, style = caseCellStyle),
+//      Cell(value = "", index = 5, style = caseCellStyle),
+//      Cell(value = "", index = 6, style = caseCellStyle),
+//      Cell(value = "", index = 7, style = caseCellStyle),
+//      Cell(value = "", index = 8, style = caseCellStyle),
+//      Cell(value = c.thenNote.getOrElse(""), index = 9, style = noteCellStyle)
+//    )
+//    sheet.addRow(row)
+//  }
 }
 
 

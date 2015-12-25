@@ -35,7 +35,7 @@ abstract class SharedExamplesForStepDto extends FlatSpec with Matchers with Feat
     parseCases(0).length should ===(5)
     parseCases(1).length should ===(7)
     parseCases(2).length should ===(1)
-    parseCases(3).length should ===(3)
+    parseCases(3).length should ===(5)
     parseCases(5).length should ===(3)
   }
 
@@ -73,7 +73,7 @@ abstract class SharedExamplesForStepDto extends FlatSpec with Matchers with Feat
     cases(4).given should ===(None)
     cases(4).when should ===(None)
     cases(4).then should ===(Some("各シナリオとステップが表示されていること"))
-    cases(4).note should ===(Some(
+    cases(4).thenNote should ===(Some(
       """シナリオは以下の４つ
         |1. コマンドを実行して同名の結果報告書を生成する
         |2. オプションで指定したディレクトリにファイルを出力する
@@ -88,30 +88,37 @@ abstract class SharedExamplesForStepDto extends FlatSpec with Matchers with Feat
 
     cases(0).id should ===("0040001")
     cases(0).given should ===(None)
-    cases(0).when should ===(Some(
-      """ホームディレクトリに移動する
-        |"vinegar -o ~/Desktop /tmp/vinegar/example.feature" コマンドを実行する
-        |このテキストは上記２ステップと合わせて「When」に記述されていること""".stripMargin))
-    cases(0).then should ===(Some("1. このテキストは「Then」に記述されていること"))
+    cases(0).when should ===(Some("ホームディレクトリに移動する"))
+    cases(0).then should ===(None)
 
     cases(1).id should ===("0040002")
     cases(1).given should ===(None)
-    cases(1).when should ===(None)
-    cases(1).then should ===(Some("2. このテキストは 1. の次行の「Then」に記述されていること"))
+    cases(1).when should ===(Some("\"vinegar -o ~/Desktop /tmp/vinegar/example.feature\" コマンドを実行する"))
+    cases(1).then should ===(None)
 
     cases(2).id should ===("0040003")
     cases(2).given should ===(None)
-    cases(2).when should ===(None)
-    cases(2).then should ===(Some("3. このテキストは 3. の次行の「Then」に記述されていること"))
+    cases(2).when should ===(Some("このテキストは上記２ステップと合わせて「When」に記述されていること"))
+    cases(2).then should ===(Some("1. このテキストは「Then」に記述されていること"))
+
+    cases(3).id should ===("0040004")
+    cases(3).given should ===(None)
+    cases(3).when should ===(None)
+    cases(3).then should ===(Some("2. このテキストは 1. の次行の「Then」に記述されていること"))
+
+    cases(4).id should ===("0040005")
+    cases(4).given should ===(None)
+    cases(4).when should ===(None)
+    cases(4).then should ===(Some("3. このテキストは 3. の次行の「Then」に記述されていること"))
   }
 
-  it should "transfar cases with comment" in {
-    parseCases(1)(3).note should ===(Some(
-      """/tmp/vinegar/path/to/deep/dir は存在しないこと
-        |必要であれば rm -rf /tmp/vinegar/path/ で消しておく
-        |日本語環境の場合はエラーメッセージが日本語になる場合もあります""".stripMargin))
-    parseCases(5)(2).note should ===(Some(
-      """ここはファイル末尾のコメントです
-        |備考に入っていますか？""".stripMargin))
-  }
+//  it should "transfar cases with comment" in {
+//    parseCases(1)(3).note should ===(Some(
+//      """/tmp/vinegar/path/to/deep/dir は存在しないこと
+//        |必要であれば rm -rf /tmp/vinegar/path/ で消しておく
+//        |日本語環境の場合はエラーメッセージが日本語になる場合もあります""".stripMargin))
+//    parseCases(5)(2).note should ===(Some(
+//      """ここはファイル末尾のコメントです
+//        |備考に入っていますか？""".stripMargin))
+//  }
 }

@@ -1,9 +1,9 @@
 package jp.co.so_net.vinegar
 
-import jp.co.so_net.vinegar.dto.{ScenarioDto, DescriptionDto, BackgroundDto}
-import jp.co.so_net.vinegar.model.{Scenario, Suite, Case}
 import gherkin._
 import gherkin.ast._
+import jp.co.so_net.vinegar.dto.{BackgroundDto, DescriptionDto, ScenarioDto}
+import jp.co.so_net.vinegar.model.Suite
 
 object VinegarDto {
   def parse(gherkin: String): Either[Throwable, Suite] = {
@@ -22,11 +22,3 @@ object VinegarDto {
     }
   }
 }
-
-
-
-
-
-
-
-
