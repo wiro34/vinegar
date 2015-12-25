@@ -12,6 +12,10 @@ libraryDependencies += "com.github.scopt" %% "scopt" % "3.3.0"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.4" % "test"
 
+libraryDependencies += "com.lihaoyi" %% "pprint" % "0.3.6"
+
+scalacOptions ++= Seq("-feature", "-deprecation")
+
 resolvers += Resolver.sonatypeRepo("public")
 
 val buildRelease = Def.taskKey[File]("Build release jar ...")

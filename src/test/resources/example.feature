@@ -39,6 +39,7 @@ Feature: フィーチャファイルからテスト実施結果報告書を生�
     And  /tmp/vinegar に example.xlsx ファイルが存在しないこと
     And  カレントディレクトリに example.xlsx ファイルが存在しないこと
 
+    Given ホームディレクトリに移動する
     When "vinegar /tmp/vinegar/example.feature --out /tmp/vinegar/path/to/deep/dir" コマンドを実行する
       # /tmp/vinegar/path/to/deep/dir は存在しないこと
       # 必要であれば rm -rf /tmp/vinegar/path/ で消しておく
