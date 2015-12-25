@@ -5,23 +5,23 @@ import gherkin.ast._
 
 abstract class AbstractStep(val keyword: String)
 
-case object GivenStep extends AbstractStep("Given ")
+case object GivenStep extends AbstractStep("Given")
 
-case object WhenStep extends AbstractStep("When ")
+case object WhenStep extends AbstractStep("When")
 
-case object ThenStep extends AbstractStep("Then ")
+case object ThenStep extends AbstractStep("Then")
 
 case object AnotherStep extends AbstractStep("")
 
 object StepCompanion {
-  val givenPattern = """(Given )""".r
-  val whenPattern = """(When )""".r
-  val thenPattern = """(Then )""".r
-  val otherPattern = """(And |But )""".r
+  val givenPattern = """(Given|前提)""".r
+  val whenPattern = """(When|もし)""".r
+  val thenPattern = """(Then|ならば)""".r
+  val otherPattern = """(And|But|かつ|ただし)""".r
 
   def apply(step: Step, lastKeyword: String): AbstractStep = apply(step.getKeyword, lastKeyword)
 
-  def apply(keyword: String, lastKeyword: String): AbstractStep = keyword match {
+  def apply(keyword: String, lastKeyword: String): AbstractStep = keyword.trim match {
     case givenPattern(_) => GivenStep
     case whenPattern(_) => WhenStep
     case thenPattern(_) => ThenStep
