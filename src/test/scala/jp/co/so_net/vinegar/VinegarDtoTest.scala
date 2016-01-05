@@ -35,8 +35,4 @@ class VinegarDtoTest extends FlatSpec with Matchers {
   "Suite" should "have five scenarios" in {
     suite.scenarios.length should ===(5)
   }
-
-  "First scenario" should "have three steps" in {
-    suite.scenarios.head.cases.length should ===(5)
-  }
 }
