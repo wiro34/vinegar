@@ -4,11 +4,11 @@ import com.norbitltd.spoiwo.model.enums.{CellHorizontalAlignment, CellFill, Cell
 import com.norbitltd.spoiwo.model._
 
 object DefinedStyles {
-  val metaRange = Range(2, 9)
+  val metaRange = Range(2, 4)
 
-  val lineHeight = 20
+  val lineHeight = 16
 
-  val font = Font(fontName = "メイリオ", height = 10)
+  val font = Font(fontName = "メイリオ", height = 9)
 
   val solidBlackBorder = CellBorders(
     leftStyle = CellBorderStyle.Thin, leftColor = Color.Black,
@@ -43,18 +43,30 @@ object DefinedStyles {
     font = font,
     wrapText = true
   )
+  val centeredValueCellStyle = valueCellStyle.withHorizontalAlignment(CellHorizontalAlignment.Center)
 
-  val scenarioHeaderStyle = headerCellStyle.withFillForegroundColor(Color(0xd0, 0xf3, 0xe1))
+  val scenarioHeaderStyle = headerCellStyle.withFillForegroundColor(Color(0xda, 0xee, 0xf3))
 
-  val scenarioNameCellStyle = valueCellStyle.withFillForegroundColor(Color(0xd0, 0xf3, 0xe1)).withFillPattern(CellFill.Solid)
-
-  val caseCellStyle = valueCellStyle.withVerticalAlignment(CellVerticalAlignment.Top)
+  val scenarioNameCellStyle = valueCellStyle.withFillForegroundColor(Color(0xda, 0xee, 0xf3)).withFillPattern(CellFill.Solid)
 
   val caseIdCellStyle = headerCellStyle
 
+  val caseCellStyle = valueCellStyle.withVerticalAlignment(CellVerticalAlignment.Top)
+
+  val dateValueCellStyle = centeredValueCellStyle.withDataFormat(CellDataFormat("mm/dd"))
+
   val noteCellStyle = caseCellStyle.withoutWrapText
+
+  import scala.language.implicitConversions
 
   implicit def toWidth(points: Int): Width = new Width(points, WidthUnit.Character)
 
   implicit def toHeight(points: Int): Height = new Height(points, HeightUnit.Point)
+
+  implicit def convertIntToLineHeight(lines: Int): LineHeight = new LineHeight(lines)
+
+  class LineHeight(n: Int) {
+    def lines = n * lineHeight
+  }
+
 }

@@ -7,7 +7,7 @@ case class Suite(name: String,
 
 case class Scenario(id: Int,
                     name: String,
-                    cases: Seq[Case] = Seq.empty[Case])
+                    cases: Seq[Given] = Seq.empty[Given])
 
 sealed trait Case {
   val text: Option[String]

@@ -79,7 +79,7 @@ class StepDto(feature: Feature, scenario: ScenarioDefinition, scenarioId: Int) {
 
   case class Root(children: Seq[Given]) extends HasChildren[Given]
 
-  def parseSteps: Seq[Case] = {
+  def parseSteps: Seq[Given] = {
     val steps = scenario.getSteps.toList
     inner(1, steps, None, Root(Seq.empty[Given])).children
   }
