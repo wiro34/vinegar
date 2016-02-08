@@ -3,6 +3,10 @@ Feature: フィーチャファイルからテスト実施結果報告書を生�
   * 実施と結果の報告はテキストファイルでは難しいのでひとまずエクセルでまとめたい
   * テスト仕様書から自動で結果報告ファイルを生成したい
 
+  # ここにコメントを書くと備考になります。
+  # もちろん複数のコメントを書くことも
+  # 可能です。
+
   Background:
     Given example.feature を /tmp/vinegar にコピーする
     Given /tmp/vinegar/example.feature を UTF-8 にする

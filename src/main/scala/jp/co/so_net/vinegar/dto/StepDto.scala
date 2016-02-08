@@ -69,7 +69,7 @@ trait StepMatchPatternBase {
 
 object StepMatchPattern extends StepMatchPatternBase
 
-class StepDto(feature: Feature, scenario: ScenarioDefinition, scenarioId: Int) {
+class StepDto(feature: Feature, scenario: ScenarioDefinition, scenarioId: Int) extends CommentTrimmer {
 
   import StepMatchPattern._
 
@@ -137,8 +137,6 @@ class StepDto(feature: Feature, scenario: ScenarioDefinition, scenarioId: Int) {
     }
   }
 
-  val commentStripPattern = """[ \t\x0B\f\r]*# ?""".r
-
   private def getStepComment(step: Step): Option[String] = {
     val range = Range(step.getLocation.getLine, scanStopLine(step))
     val comments = feature.getComments
@@ -146,7 +144,7 @@ class StepDto(feature: Feature, scenario: ScenarioDefinition, scenarioId: Int) {
       .sortBy(comment => comment.getLocation.getLine)
       .map(comment => comment.getText)
       .mkString("\n")
-    commentStripPattern.replaceAllIn(comments, "") match {
+    trimComment(comments) match {
       case s if s.nonEmpty => Some(s)
       case _ => None
     }

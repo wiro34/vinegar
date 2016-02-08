@@ -17,6 +17,7 @@ class ExcelGenerator(suite: Suite) {
     new StoryGenerator(suite),
     new DescriptionGenerator(suite),
     new BackgroundGenerator(suite),
+    new RemarkGenerator(suite),
     new EnvironmentGenerator(suite),
     EmptyRowGenerator,
     CaseHeaderGenerator,
@@ -82,6 +83,23 @@ class BackgroundGenerator(suite: Suite) extends SheetGenerator {
     ).addCells(
       metaRange.map(i => Cell(value = "", index = i, style = valueCellStyle))
     ).withHeight(background.split("\n").length.lines)
+    val rowIndex = sheet.rows.length
+    sheet.addRow(row).addMergedRegion(CellRange(rowIndex -> rowIndex, 1 -> metaRange.last))
+  }
+}
+
+class RemarkGenerator(suite: Suite) extends SheetGenerator {
+
+  import DefinedStyles._
+
+  def generate(sheet: Sheet): Sheet = {
+    val remark = suite.remark.getOrElse("")
+    val row = Row(
+      Cell(value = "備考", index = 0, style = headerCellStyle),
+      Cell(value = remark, index = 1, style = valueCellStyle)
+    ).addCells(
+      metaRange.map(i => Cell(value = "", index = i, style = valueCellStyle))
+    ).withHeight(remark.split("\n").length.lines)
     val rowIndex = sheet.rows.length
     sheet.addRow(row).addMergedRegion(CellRange(rowIndex -> rowIndex, 1 -> metaRange.last))
   }
