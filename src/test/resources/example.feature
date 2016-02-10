@@ -3,6 +3,10 @@ Feature: フィーチャファイルからテスト実施結果報告書を生�
   * 実施と結果の報告はテキストファイルでは難しいのでひとまずエクセルでまとめたい
   * テスト仕様書から自動で結果報告ファイルを生成したい
 
+  # ここにコメントを書くと備考になります。
+  # もちろん複数のコメントを書くことも
+  # 可能です。
+
   Background:
     Given example.feature を /tmp/vinegar にコピーする
     Given /tmp/vinegar/example.feature を UTF-8 にする
@@ -39,6 +43,7 @@ Feature: フィーチャファイルからテスト実施結果報告書を生�
     And  /tmp/vinegar に example.xlsx ファイルが存在しないこと
     And  カレントディレクトリに example.xlsx ファイルが存在しないこと
 
+    Given ホームディレクトリに移動する
     When "vinegar /tmp/vinegar/example.feature --out /tmp/vinegar/path/to/deep/dir" コマンドを実行する
       # /tmp/vinegar/path/to/deep/dir は存在しないこと
       # 必要であれば rm -rf /tmp/vinegar/path/ で消しておく

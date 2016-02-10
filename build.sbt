@@ -1,6 +1,6 @@
 name := """vinegar"""
 
-version := "0.1"
+version := "0.1.1"
 
 scalaVersion := "2.11.7"
 
@@ -11,6 +11,10 @@ libraryDependencies += "com.norbitltd" % "spoiwo" % "1.0.6"
 libraryDependencies += "com.github.scopt" %% "scopt" % "3.3.0"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.4" % "test"
+
+libraryDependencies += "com.lihaoyi" %% "pprint" % "0.3.6"
+
+scalacOptions ++= Seq("-feature", "-deprecation")
 
 resolvers += Resolver.sonatypeRepo("public")
 
