@@ -7,6 +7,8 @@ import com.norbitltd.spoiwo.model._
 import com.norbitltd.spoiwo.natures.xlsx.Model2XlsxConversions._
 import jp.co.so_net.vinegar.model.{Given, Case, Scenario, Suite}
 
+import scala.collection.JavaConverters._
+
 trait SheetGenerator {
   def generate(sheet: Sheet): Sheet
 }
@@ -227,6 +229,7 @@ class CaseGenerator(given: Given) extends SheetGenerator {
   val givenColumn = 1
   val whenColumn = 2
   val commentPrefix = "# "
+  val minLines = 3
 
   def generate(sheet: Sheet): Sheet = {
     val firstRowIndex = sheet.rows.length
@@ -237,31 +240,37 @@ class CaseGenerator(given: Given) extends SheetGenerator {
     ).foldLeft(sheet)((s, f) => f(s))
   }
 
-  def generateCaseRows: Seq[Row] = {
-    given.children.flatMap { w =>
-      val firstWhen = w equals given.children.head
-      w.children.map { t =>
-        val firstThen = t equals w.children.head
-        val givenText = if (firstWhen && firstThen) joinTextAndNote(given) else ""
-        val whenText = if (firstThen) joinTextAndNote(w) else ""
-        Row(
-          Cell(value = t.id, style = caseIdCellStyle),
-          Cell(value = givenText, style = caseCellStyle),
-          Cell(value = whenText, style = caseCellStyle),
-          Cell(value = t.text.getOrElse(""), style = caseCellStyle),
-          Cell(value = "", style = centeredValueCellStyle),
-          Cell(value = "", style = centeredValueCellStyle),
-          Cell(value = "", style = dateValueCellStyle),
-          Cell(value = "", style = noteCellStyle)
-        ).withHeight(calcHeight(t.text).lines)
-      }
+  def generateCaseRows: Seq[Row] = given.children.flatMap { w =>
+    val firstWhen = w equals given.children.head
+    w.children.map { t =>
+      val firstThen = t equals w.children.head
+      val givenText = if (firstWhen && firstThen) joinTextAndNote(given) else ""
+      val whenText = if (firstThen) joinTextAndNote(w) else ""
+      val thenText = t.text.getOrElse("")
+      val noteText = t.note.getOrElse("")
+      Row(
+        Cell(value = t.id, style = caseIdCellStyle),
+        Cell(value = givenText, style = caseCellStyle),
+        Cell(value = whenText, style = caseCellStyle),
+        Cell(value = thenText, style = caseCellStyle),
+        Cell(value = "", style = centeredValueCellStyle),
+        Cell(value = "", style = centeredValueCellStyle),
+        Cell(value = "", style = dateValueCellStyle),
+        Cell(value = noteText, style = noteCellStyle)
+      ).withHeight(
+        Seq(
+          minLines,
+          calcHeight(thenText),
+          calcHeight(whenText),
+          calcHeight(noteText)
+        ).max.lines
+      )
     }
   }
 
-  def calcHeight(text: Option[String]): Int = {
+  private def calcHeight(text: String): Int = {
     val sjis = Charset.forName("SJIS")
     val maxLineLength = 78f
-    val minLines = 3
 
     val toCharLength: PartialFunction[Char, Int] = {
       case c => c.toString.getBytes(sjis).length
@@ -269,15 +278,11 @@ class CaseGenerator(given: Given) extends SheetGenerator {
 
     val calcCharLength: (Int => Float) = l => (l - 1) * 0.73f + 1
 
-    val lines = text.map(_.lines.map { line =>
+    text.lines.map { line =>
       val lineLength = line.collect(toCharLength).map(calcCharLength).sum.ceil.toInt
       (lineLength / maxLineLength).ceil.toInt
-    }.sum).getOrElse(2)
-
-    Seq(lines, minLines).max
+    }.sum
   }
-
-  //  calcHeight(Some(str))
 
   def addCaseRows(sheet: Sheet): Sheet = {
     sheet.addRows(generateCaseRows)
