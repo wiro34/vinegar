@@ -1,7 +1,8 @@
 package jp.co.so_net.vinegar.parser
 
 import jp.co.so_net.vinegar.FixtureLoader
-import jp.co.so_net.vinegar.model.{Background, Given, GivenGroup, Suite}
+import jp.co.so_net.vinegar.model.{Background, Given, GivenGroup}
+import org.scalatest.OptionValues._
 import org.scalatest._
 
 class BackgroundParserTest extends FlatSpec with Matchers with FixtureLoader {
@@ -18,11 +19,14 @@ class BackgroundParserTest extends FlatSpec with Matchers with FixtureLoader {
       |      # http://example.com/login
     """.stripMargin
 
-  val feature = parseFeature(featureText)
+  val parser = new BackgroundParser {
+    val feature = parseFeature(featureText)
+  }
 
   it should "have backgrounds" in {
-    val background = Background(
-      group = Seq(GivenGroup(
+    val background = parser.background
+    background.value shouldBe Background(
+      groups = Seq(GivenGroup(
         steps = Seq(
           Given(text = "クッキーを削除する"),
           Given(text = "以下のユーザを作成する:"),
@@ -30,7 +34,5 @@ class BackgroundParserTest extends FlatSpec with Matchers with FixtureLoader {
         )
       ))
     )
-    val suite = new BackgroundParser(feature).parse(Suite(name = "test"))
-    suite.background should be(Some(background))
   }
 }

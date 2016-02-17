@@ -2,12 +2,28 @@ package jp.co.so_net.vinegar.parser
 
 object StringTrimmer {
 
-  private val COMMENT_Pattern = """[ \t\x0B\f\r]*# ?""".r
+  private val commentPattern = """(?m)^[ \t\x0B\f\r]*# ?""".r
 
-  private val INDENT_PATTERN = """(?m)^\s{2}""".r
+  private val indentChars = """ \t\x0B\f\r"""
 
-  def trimComment(comment: String): String = COMMENT_Pattern.replaceAllIn(comment, "")
+  private val newLine: String = try {
+    System.getProperty("line.separator")
+  } catch {
+    case _: Throwable => "\n"
+  }
 
-  def trimIndent(lines: String): String = INDENT_PATTERN.replaceAllIn(lines, "")
+  def trimComment(comment: String): String = commentPattern.replaceAllIn(comment, "")
+
+  def trimIndent(multilineText: String): String = {
+    val lines = multilineText.split("(?m)[\r\n]+")
+    val minimumCommonIndent = lines.head.zipWithIndex.takeWhile {
+      case (c, i) if indentChars.contains(c) =>
+        lines.forall(_.charAt(i) == c)
+      case _ =>
+        false
+    }.map(_._1).mkString
+
+    lines.map(_.replaceFirst(minimumCommonIndent, "")).mkString(newLine)
+  }
 
 }

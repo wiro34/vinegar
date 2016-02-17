@@ -26,7 +26,7 @@ class GherkinParserTest extends FlatSpec with Matchers with MockFactory with Bef
       |    Then マイページに遷移すること
     """.stripMargin
 
-  it should "return result when parsing is succeeded" in  {
+  it should "return result when parsing is succeeded" in {
     val result = GherkinParser.parse(validFeature)
     result shouldBe a[Right[_, _]]
   }

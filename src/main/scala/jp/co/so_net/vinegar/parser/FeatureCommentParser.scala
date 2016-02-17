@@ -1,20 +1,14 @@
 package jp.co.so_net.vinegar.parser
 
 import gherkin.ast._
-import jp.co.so_net.vinegar.model._
 
-class RemarkParser(feature: Feature) extends PartialSuiteParser(feature) {
+trait FeatureCommentParser extends GherkinParser {
 
   import StringTrimmer.trimComment
 
   import collection.JavaConversions._
 
-  val firstScenario = feature.getScenarioDefinitions.headOption
-  val firstScenarioLine = firstScenario.map(_.getLocation.getLine).getOrElse(Int.MaxValue)
-
-  def parse(suite: Suite): Suite = suite.copy(remark = getRemarkComments)
-
-  private def getRemarkComments = {
+  def featureComment: Option[String] = {
     val comments = feature.getComments
       .filter(isRemarkComment)
       .map(comment => comment.getText)
@@ -26,4 +20,9 @@ class RemarkParser(feature: Feature) extends PartialSuiteParser(feature) {
   }
 
   private def isRemarkComment(c: Comment): Boolean = c.getLocation.getLine < firstScenarioLine
+
+  private def firstScenario = feature.getScenarioDefinitions.headOption
+
+  private def firstScenarioLine = firstScenario.map(_.getLocation.getLine).getOrElse(Int.MaxValue)
+
 }
