@@ -1,62 +1,84 @@
 package jp.co.so_net.vinegar
 
-import java.io.{FileNotFoundException, File}
 import java.nio.file.{Files, Path, Paths}
 
-import generator.ExcelGenerator
+import jp.co.so_net.vinegar.generator.{ExcelGenerator2, Generator}
+import jp.co.so_net.vinegar.model.Suite
+import jp.co.so_net.vinegar.parser.GherkinParser
 
-object VinegarMain extends App {
+object Vinegar extends App {
   val name = "vinegar"
 
   VinegarOptionParser.parse(args, VinegarOption()) match {
-    case Some(config) =>
-      try {
-        generateExcel(config)
-      } catch {
-        case e: Throwable => errorAndExit(e.toString)
-      }
+    case Some(config) => new Vinegar(config, new ExcelGenerator2, new TextFileReader, new ExcelFileWriter).run
     case None => // arguments are bad, error message will have been displayed
   }
+}
 
-  def generateExcel(config: VinegarOption) = {
-    val path = Paths.get(config.file.getAbsolutePath)
+class Vinegar[T](config: VinegarOption,
+                 generator: Generator[T],
+                 reader: FileReader,
+                 writer: FileWriter[T]) extends Console with SystemTerminator with DirectoryUtil {
+
+  val inputFilepath = Paths.get(config.file.getAbsolutePath)
+
+  def run = {
     try {
-      val gherkin = loadFile(path.toFile)
-      VinegarDto.parse(gherkin) match {
-        case Right(suite) =>
-          if (config.force)
-            makeDirRecursive(path.getParent)
-          new ExcelGenerator(suite).writeFile(generateOutputFilename(path))
-        case Left(e) =>
-          errorAndExit(e.getMessage)
-      }
+      generateExcel
     } catch {
-      case e: FileNotFoundException => errorAndExit(path + ": No such file or directory")
+      case e: Throwable =>
+        errorAndExit("Error: " + e.getMessage)
     }
   }
 
-  def loadFile(file: File) = io.Source.fromFile(file).mkString
+  private def generateExcel = {
+    GherkinParser.parse(reader.read(inputFilepath.toFile)) match {
+      case Right(suite) =>
+        writeExcelFile(suite)
+      case Left(e) =>
+        errorAndExit(e.getMessage)
+    }
+  }
 
-  def generateOutputFilename(path: Path): String = {
+  private def writeExcelFile(suite: Suite) = {
+    val outputFilepath = Paths.get(generateOutputFilename(inputFilepath))
+    if (config.force)
+      makeDirRecursive(outputFilepath.getParent)
+    val sheet = generator.generate(suite)
+    writer.write(outputFilepath.toString, sheet)
+    //    new ExcelGenerator(suite).writeFile(generateOutputFilename(path))
+  }
+
+  private def generateOutputFilename(path: Path): String = {
     val filename = path.getFileName.toString
     val basename = filename.lastIndexOf('.') match {
       case i if i >= 0 => filename.substring(0, i)
       case _ => filename
     }
-    path.getParent.resolve(basename + ".xlsx").toString
+    val outputPath = config.out.map(_.toPath).getOrElse(path.getParent)
+    outputPath.resolve(basename + ".xlsx").toString
   }
 
-  private def makeDirRecursive(path: Path): Unit = path match {
+  private def errorAndExit(message: String, status: Int = -1) = {
+    println(message)
+    exit(status)
+  }
+}
+
+trait Console {
+  def println(message: String): Unit = Console.err.println(message)
+}
+
+trait SystemTerminator {
+  def exit(status: Int): Unit = System.exit(status)
+}
+
+trait DirectoryUtil {
+  def makeDirRecursive(path: Path): Unit = path match {
     case p if Files.notExists(p.getParent) =>
       makeDirRecursive(p.getParent)
     case p if Files.notExists(p) =>
       Files.createDirectory(p)
-    case _ =>
-    // nothing to do
-  }
-
-  def errorAndExit(message: String, status: Int = -1) = {
-    System.err.println(message)
-    System.exit(status)
+    case _ => // nothing to do
   }
 }

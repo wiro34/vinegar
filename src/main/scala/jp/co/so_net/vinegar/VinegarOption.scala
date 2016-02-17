@@ -6,7 +6,7 @@ case class VinegarOption(file: File = new File("."),
                          out: Option[File] = None,
                          force: Boolean = false)
 
-object VinegarOptionParser extends scopt.OptionParser[VinegarOption](VinegarMain.name) {
+object VinegarOptionParser extends scopt.OptionParser[VinegarOption](Vinegar.name) {
   opt[File]('o', "out") valueName ("<outdir>") action { (x, option) =>
     option.copy(out = Some(x))
   } text ("output directory of generated excel file")
