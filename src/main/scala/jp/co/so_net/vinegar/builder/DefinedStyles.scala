@@ -1,4 +1,4 @@
-package jp.co.so_net.vinegar.generator
+package jp.co.so_net.vinegar.builder
 
 import com.norbitltd.spoiwo.model.enums.{CellHorizontalAlignment, CellFill, CellVerticalAlignment, CellBorderStyle}
 import com.norbitltd.spoiwo.model._

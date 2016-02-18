@@ -22,6 +22,8 @@ scalacOptions ++= Seq("-feature", "-deprecation")
 
 resolvers += Resolver.sonatypeRepo("public")
 
+testOptions in Test += Tests.Argument("-oT")
+
 val buildRelease = Def.taskKey[File]("Build release jar ...")
 
 artifactPath in Compile in buildRelease := baseDirectory.value / "release" / ("vinegar-" + version.value + ".jar")

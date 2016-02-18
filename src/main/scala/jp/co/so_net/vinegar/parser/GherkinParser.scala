@@ -11,13 +11,16 @@ object GherkinParser {
     case e: Throwable => Left(e)
   }
 
-  class ParserImpl(gherkin: String) extends DescriptionParser with FeatureCommentParser with BackgroundParser {
+  class ParserImpl(gherkin: String) extends DescriptionParser with FeatureCommentParser with BackgroundParser with ScenarioParser {
     val feature: Feature = new Parser[Feature](new AstBuilder()).parse(gherkin)
 
     def parse: Either[Throwable, Suite] = {
       Right(Suite(
         name = feature.getName,
-        background = background
+        description = description,
+        comment = featureComment,
+        background = background,
+        scenarios = scenarios
       ))
     }
   }

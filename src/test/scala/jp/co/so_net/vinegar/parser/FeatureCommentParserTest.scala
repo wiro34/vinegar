@@ -1,7 +1,6 @@
 package jp.co.so_net.vinegar.parser
 
 import jp.co.so_net.vinegar.FixtureLoader
-import jp.co.so_net.vinegar.model.{Background, Given, GivenGroup}
 import org.scalatest.OptionValues._
 import org.scalatest._
 

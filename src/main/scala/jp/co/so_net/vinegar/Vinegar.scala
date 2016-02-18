@@ -2,7 +2,7 @@ package jp.co.so_net.vinegar
 
 import java.nio.file.{Files, Path, Paths}
 
-import jp.co.so_net.vinegar.generator.{ExcelGenerator2, Generator}
+import jp.co.so_net.vinegar.builder.Builder
 import jp.co.so_net.vinegar.model.Suite
 import jp.co.so_net.vinegar.parser.GherkinParser
 
@@ -10,28 +10,28 @@ object Vinegar extends App {
   val name = "vinegar"
 
   VinegarOptionParser.parse(args, VinegarOption()) match {
-    case Some(config) => new Vinegar(config, new ExcelGenerator2, new TextFileReader, new ExcelFileWriter).run
+    case Some(config) => new Vinegar(config, Builder.ExcelGenerator, new TextFileReader, new ExcelFileWriter).run
     case None => // arguments are bad, error message will have been displayed
   }
 }
 
 class Vinegar[T](config: VinegarOption,
-                 generator: Generator[T],
+                 builder: Builder[T],
                  reader: FileReader,
                  writer: FileWriter[T]) extends Console with SystemTerminator with DirectoryUtil {
 
   val inputFilepath = Paths.get(config.file.getAbsolutePath)
 
-  def run = {
+  def run() = {
     try {
-      generateExcel
+      generateExcel()
     } catch {
       case e: Throwable =>
         errorAndExit("Error: " + e.getMessage)
     }
   }
 
-  private def generateExcel = {
+  private def generateExcel() = {
     GherkinParser.parse(reader.read(inputFilepath.toFile)) match {
       case Right(suite) =>
         writeExcelFile(suite)
@@ -44,9 +44,8 @@ class Vinegar[T](config: VinegarOption,
     val outputFilepath = Paths.get(generateOutputFilename(inputFilepath))
     if (config.force)
       makeDirRecursive(outputFilepath.getParent)
-    val sheet = generator.generate(suite)
+    val sheet = builder.build(suite)
     writer.write(outputFilepath.toString, sheet)
-    //    new ExcelGenerator(suite).writeFile(generateOutputFilename(path))
   }
 
   private def generateOutputFilename(path: Path): String = {

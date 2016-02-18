@@ -1,8 +1,5 @@
 package jp.co.so_net.vinegar.parser
 
-import jp.co.so_net.vinegar.FixtureLoader
-import jp.co.so_net.vinegar.model.{Background, Given, GivenGroup}
-import org.scalatest.OptionValues._
 import org.scalatest._
 
 class StringTrimmerTest extends FlatSpec with Matchers {
@@ -31,10 +28,6 @@ class StringTrimmerTest extends FlatSpec with Matchers {
       """   共通のインデント部分を削除します。
         |     最も短いインデントに合わせてるため、
         |  この行が基準となります。""".stripMargin
-
-    println(text)
-    println(StringTrimmer.trimIndent(text))
-
     StringTrimmer.trimIndent(text) shouldBe
       """ 共通のインデント部分を削除します。
         |   最も短いインデントに合わせてるため、
