@@ -1,7 +1,7 @@
 Feature: フィーチャファイルからテスト実施結果報告書を生成する
-  * テスト仕様書はレビューや差分確認が容易になるため、テキストファイルで作成したい
-  * 実施と結果の報告はテキストファイルでは難しいのでひとまずエクセルでまとめたい
-  * テスト仕様書から自動で結果報告ファイルを生成したい
+* テスト仕様書はレビューや差分確認が容易になるため、テキストファイルで作成したい
+* 実施と結果の報告はテキストファイルでは難しいのでひとまずエクセルでまとめたい
+* テスト仕様書から自動で結果報告ファイルを生成したい
 
   # ここにコメントを書くと備考になります。
   # もちろん複数のコメントを書くことも
@@ -22,15 +22,11 @@ Feature: フィーチャファイルからテスト実施結果報告書を生�
       * 実施と結果の報告はテキストファイルでは難しいのでひとまずエクセルでまとめたい
       * テスト仕様書から自動で結果報告ファイルを生成したい
       """
-    Given ホームディレクトリに移動する
-    When "vinegar /tmp/vinegar/example.feature" を実行する
     Then 事前準備に以下が表示されていること:
       """
       example.feature を /tmp/vinegar にコピーする
       /tmp/vinegar/example.feature を UTF-8 にする
       """
-    When "vinegar /tmp/vinegar/example.feature" を実行する
-    When "vinegar /tmp/vinegar/example.feature" を実行する
     Then 各シナリオとステップが表示されていること
       # シナリオは以下の４つ
       # 1. コマンドを実行して同名の結果報告書を生成する
@@ -47,6 +43,7 @@ Feature: フィーチャファイルからテスト実施結果報告書を生�
     And  /tmp/vinegar に example.xlsx ファイルが存在しないこと
     And  カレントディレクトリに example.xlsx ファイルが存在しないこと
 
+    Given ホームディレクトリに移動する
     When "vinegar /tmp/vinegar/example.feature --out /tmp/vinegar/path/to/deep/dir" コマンドを実行する
       # /tmp/vinegar/path/to/deep/dir は存在しないこと
       # 必要であれば rm -rf /tmp/vinegar/path/ で消しておく
@@ -54,7 +51,7 @@ Feature: フィーチャファイルからテスト実施結果報告書を生�
       """
       /tmp/vinegar/path/to/deep/dir: No such file or directory
       """
-      # 日本語環境の場合はエラーメッセージが日本語になる場合もあります
+      # エラーメッセージが日本語の可能性もあり
     And  /tmp/vinegar/path/to/deep/dir に example.xlsx ファイルが存在しないこと
 
     When "vinegar /tmp/vinegar/example.feature --out /tmp/vinegar/path/to/deep/dir -f" コマンドを実行する
@@ -75,6 +72,12 @@ Feature: フィーチャファイルからテスト実施結果報告書を生�
     Then 1. このテキストは「Then」に記述されていること
     And  2. このテキストは 1. の次行の「Then」に記述されていること
     But  3. このテキストは 3. の次行の「Then」に記述されていること
+    Given このテキストは次の行の「Given」
+    Then 1. このテキストは「Then」に記述されていること
+    When ホームディレクトリに移動する
+    Then 1. このテキストは「Then」に記述されていること
+    When ホームディレクトリに移動する
+    Then 1. このテキストは「Then」に記述されていること
 
   @pending
   Scenario: pending タグが付いているシナリオは無視する
@@ -84,6 +87,5 @@ Feature: フィーチャファイルからテスト実施結果報告書を生�
     Then 「各シナリオとステップが表示されていること」に備考が設定されていること
     Then 「"vinegar /tmp/vinegar/example.feature --out /tmp/vinegar/path/to/deep/dir" コマンドを実行する」に備考が設定されていること
     Then このテストの備考に以下が記入されていること
-      # ここはファイル末尾のコメントです
-      # 備考に入っていますか？
-      # コメント中の # は無視されていないこと
+      #ここはファイル末尾のコメントです
+      #備考に入っていますか？

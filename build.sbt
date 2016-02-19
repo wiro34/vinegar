@@ -10,13 +10,19 @@ libraryDependencies += "com.norbitltd" % "spoiwo" % "1.0.6"
 
 libraryDependencies += "com.github.scopt" %% "scopt" % "3.3.0"
 
-libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.4" % "test"
+libraryDependencies += "org.scalactic" %% "scalactic" % "2.2.6"
+
+libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.6" % "test"
+
+libraryDependencies += "org.scalamock" %% "scalamock-scalatest-support" % "3.2" % "test"
 
 libraryDependencies += "com.lihaoyi" %% "pprint" % "0.3.6"
 
 scalacOptions ++= Seq("-feature", "-deprecation")
 
 resolvers += Resolver.sonatypeRepo("public")
+
+testOptions in Test += Tests.Argument("-oT")
 
 val buildRelease = Def.taskKey[File]("Build release jar ...")
 
