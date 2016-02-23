@@ -22,11 +22,15 @@ Feature: フィーチャファイルからテスト実施結果報告書を生�
       * 実施と結果の報告はテキストファイルでは難しいのでひとまずエクセルでまとめたい
       * テスト仕様書から自動で結果報告ファイルを生成したい
       """
+    Given ホームディレクトリに移動する
+    When "vinegar /tmp/vinegar/example.feature" を実行する
     Then 事前準備に以下が表示されていること:
       """
       example.feature を /tmp/vinegar にコピーする
       /tmp/vinegar/example.feature を UTF-8 にする
       """
+    When "vinegar /tmp/vinegar/example.feature" を実行する
+    When "vinegar /tmp/vinegar/example.feature" を実行する
     Then 各シナリオとステップが表示されていること
       # シナリオは以下の４つ
       # 1. コマンドを実行して同名の結果報告書を生成する
@@ -72,7 +76,8 @@ Feature: フィーチャファイルからテスト実施結果報告書を生�
     And  2. このテキストは 1. の次行の「Then」に記述されていること
     But  3. このテキストは 3. の次行の「Then」に記述されていること
 
-  Scenario: ステップが存在しないシナリオは無視する
+  @pending
+  Scenario: pending タグが付いているシナリオは無視する
 
   Scenario: コメントは備考にコピーする
     When "vinegar /tmp/vinegar/example.feature" を実行する

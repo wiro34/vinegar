@@ -7,3 +7,4 @@
 /project/target/
 /projectFilesBackup*/
 /target/
+.DS_Store
