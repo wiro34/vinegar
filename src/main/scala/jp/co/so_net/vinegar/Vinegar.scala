@@ -27,17 +27,20 @@ class Vinegar[T](config: VinegarOption,
       generateExcel()
     } catch {
       case e: Throwable =>
-        errorAndExit("Error: " + e.getMessage)
+        val sb = new StringBuilder
+        sb.append("Error: " + e.getMessage + newLine)
+        e.getStackTrace.foreach(st => sb.append(st + newLine))
+        errorAndExit(sb.toString())
     }
   }
 
   private def generateExcel() = {
-    GherkinParser.parse(reader.read(inputFilepath.toFile)) match {
-      case Right(suite) =>
-        writeExcelFile(suite)
-      case Left(e) =>
-        errorAndExit(e.getMessage)
-    }
+    def throughError[A](e: Throwable): Either[Throwable, A] = Left(e)
+    def throwError(e: Throwable): Unit = throw e
+
+    reader.read(inputFilepath.toFile)
+      .fold(throughError, text => GherkinParser.parse(text))
+      .fold(throwError, suite => writeExcelFile(suite))
   }
 
   private def writeExcelFile(suite: Suite) = {

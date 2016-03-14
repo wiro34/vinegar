@@ -38,6 +38,8 @@ Usage: vinegar [options] file
         prints this usage text
 ```
 
+※ フィーチャファイルは UTF-8 もしくは Shift-JIS で保存してください。
+
 ## Contribution
 
 Use sbt console

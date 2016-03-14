@@ -14,15 +14,16 @@ import scala.io.Source
 class VinegarTest extends FlatSpec with Matchers with MockFactory {
   val dummyPath = "/tmp/path/to/dummy.feature"
 
-  object FixtureFileReader extends FileReader {
-    def read(file: File): String = Source.fromURL(getClass.getResource("/fixture.feature")).mkString
+  val fixtureFileReader = new FileReader {
+    def read(file: File): Either[Throwable, String] =
+      Right(Source.fromURL(getClass.getResource("/fixture.feature")).mkString)
   }
 
-  object StubBuilder extends Builder[Sheet] {
+  var stubBuilder = new Builder[Sheet] {
     def build(suite: ModelSuite): Sheet = Sheet()
   }
 
-  object StubFileWriter extends FileWriter[Sheet] {
+  val stubFileWriter = new FileWriter[Sheet] {
     def write(filename: String, sheet: Sheet): Unit = {}
   }
 
@@ -42,9 +43,9 @@ class VinegarTest extends FlatSpec with Matchers with MockFactory {
     override def makeDirRecursive(path: Path): Unit = mockMakeDirRecursive(path)
   }
 
-  def newVinegar(args: String*)(builder: Builder[Sheet] = StubBuilder,
-                                reader: FileReader = FixtureFileReader,
-                                writer: FileWriter[Sheet] = StubFileWriter) = {
+  def newVinegar(args: String*)(builder: Builder[Sheet] = stubBuilder,
+                                reader: FileReader = fixtureFileReader,
+                                writer: FileWriter[Sheet] = stubFileWriter) = {
     val config = VinegarOptionParser.parse(args, VinegarOption()).get
     new Vinegar(config, builder, reader, writer) with MockConsole with MockSystemTerminator with MockDirectoryUtil
   }
@@ -52,7 +53,7 @@ class VinegarTest extends FlatSpec with Matchers with MockFactory {
   it should "generate excel file in the same directory of feature file" in {
     val mockFileWriter = mock[ExcelFileWriter]
     mockFileWriter.write _ expects("/tmp/path/to/dummy.xlsx", Sheet())
-    newVinegar(dummyPath)(reader = FixtureFileReader, writer = mockFileWriter).run()
+    newVinegar(dummyPath)(reader = fixtureFileReader, writer = mockFileWriter).run()
   }
 
   "Invalid file path" should "occurs an error" in {
