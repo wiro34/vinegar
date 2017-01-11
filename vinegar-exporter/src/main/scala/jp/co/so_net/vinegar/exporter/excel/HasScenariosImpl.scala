@@ -140,25 +140,3 @@ trait HasScenariosImpl extends HasScenarios[Sheet] {
   }
 
 }
-
-private[excel]
-object StepConversions {
-
-  implicit class StepText(step: Step) {
-    def mkString: String = (step match {
-      case _: Then =>
-        Seq(Some(step.text), step.argument.map(_.mkString))
-      case _ =>
-        Seq(Some(step.text), step.argument.map(_.mkString), step.comment.map(_.replaceAll("(?m)^", "# ")))
-    }).flatten.mkString(Environment.NEW_LINE)
-  }
-
-  implicit class ArgumentText(argument: StepArgument) {
-    def mkString: String = argument match {
-      case dt: DataTable => ""
-      case ds: DocString => ds.text
-      case ex: Example => ""
-    }
-  }
-
-}

@@ -65,7 +65,7 @@ class HasScenariosImplTest extends FlatSpec with Matchers with GherkinLoader {
     sheet.rows(3).cells.toSeq(0).value shouldBe "01-002"
     sheet.rows(3).cells.toSeq(1).value shouldBe ""
     sheet.rows(3).cells.toSeq(2).value shouldBe ""
-    sheet.rows(3).cells.toSeq(3).value shouldBe "以下のメッセージが表示されていること:\nログインに成功しました。"
+    sheet.rows(3).cells.toSeq(3).value shouldBe "以下のメッセージが表示されていること:\n    ログインに成功しました。"
 
     sheet.rows(4).cells.toSeq(0).value shouldBe "01-003"
     sheet.rows(4).cells.toSeq(1).value shouldBe "マイページを開く"

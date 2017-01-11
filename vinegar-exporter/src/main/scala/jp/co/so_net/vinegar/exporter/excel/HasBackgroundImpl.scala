@@ -9,11 +9,12 @@ trait HasBackgroundImpl extends HasBackground[Sheet] {
   val headerText = "事前準備"
 
   import DefinedStyles._
+  import StepConversions._
   import jp.co.so_net.vinegar.utils.Environment
 
   def background = (sheet: Sheet, feature: Feature) => {
     val backgroundText = feature.background match {
-      case Some(background) => background.steps.map(_.text).mkString(Environment.NEW_LINE)
+      case Some(background) => background.steps.map(_.mkString).mkString(Environment.NEW_LINE)
       case None => ""
     }
     val row = Row(

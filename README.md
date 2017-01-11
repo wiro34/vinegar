@@ -9,7 +9,7 @@ Vinegar
 
 ## Installation
 
-`release` ディレクトリの `vinegar-*.jar` をダウンロードしてください。
+[release](vinegar-cui/releases) ディレクトリから jar ファイルをダウンロードしてください。
 
 ## Usage
 
